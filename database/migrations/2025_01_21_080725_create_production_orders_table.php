@@ -25,8 +25,8 @@ return new class extends Migration
             $table->string('KlasaOpasnosti');
             $table->string('UNBroj');
             $table->string('RokIsporuke');
-            $table->string('DatumPredaje');
-            $table->string('DatumPrijema');
+            $table->date('DatumPredaje');
+            $table->date('DatumPrijema');
             $table->string('Napomena');
             $table->unsignedBigInteger('ProizvodId');
             $table->foreign('ProizvodId')->references('id')->on('products')->onDelete('cascade');

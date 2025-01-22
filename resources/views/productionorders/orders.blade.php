@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
+            {{ __('Nalozi') }}
         </h2>
     </x-slot>
 
@@ -9,10 +9,10 @@
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("Prijavljeni ste.") }}
+                    {{ __("Prijavljeni ste u naloge.") }}
                     <div class="grid2 p-6 items-center text-center">
-                        <a href="{{ url('/productionorders/createorder') }}" ><button class="btn btn-outline-primary btn-custom">KREIRANJE</button></a>
-                        <a href="{{ url('/productionorders/orders') }}" ><button class="btn btn-outline-primary btn-custom">NALOZI</button></a>
+                        <a href="{{ url('/subcode/{subcode}') }}" ><button class="btn btn-outline-primary btn-custom">KREIRANJE</button></a>
+                        <a href="{{ url('/subcode/{subcode}') }}" ><button class="btn btn-outline-primary btn-custom">NALOZI</button></a>
                         <a href="{{ url('/subcode/{subcode}') }}" ><button class="btn btn-outline-primary btn-custom">ODOBRENJA</button></a>
                         <a href="{{ url('/subcode/{subcode}') }}" ><button class="btn btn-outline-primary btn-custom">STATUSI</button></a>
                         <a href="{{ url('/subcode/{subcode}') }}" ><button class="btn btn-outline-primary btn-custom">STATUSI</button></a>

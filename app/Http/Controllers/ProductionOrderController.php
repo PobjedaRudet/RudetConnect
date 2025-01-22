@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\ProductionOrder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ProductionOrderController extends Controller
 {
@@ -13,6 +15,10 @@ class ProductionOrderController extends Controller
     public function index()
     {
         //
+        $products = Product::all();
+        Log::info($products);
+
+        return view('productionorders.createorder', compact('products'));
     }
 
     /**
@@ -21,6 +27,12 @@ class ProductionOrderController extends Controller
     public function create()
     {
         //
+        $products = Product::all();
+
+        Log::info($products);
+        Log:info('Create order');
+
+        return view('productionorders.createorder', compact('products'));
     }
 
     /**
@@ -28,7 +40,14 @@ class ProductionOrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //spasi kreiranu formu
+        $request->validate([
+            'product_id' => 'required',
+            'quantity' => 'required',
+            'due_date' => 'required',
+        ]);
+        //spremi podatke u bazu
+        ProductionOrder::create($request->all());
     }
 
     /**
