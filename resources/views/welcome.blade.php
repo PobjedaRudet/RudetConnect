@@ -31,7 +31,7 @@
 
                     <main class="mt-6 text-center">
                         <p class="text-xl text-gray-700 dark:text-gray-300">
-                            MyApp is a revolutionary application designed to simplify your life. Explore our features and get started today!
+                            New revolutionary application for connecting...
                         </p>
 
                         <div class="mt-8 flex justify-center gap-4">

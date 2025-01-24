@@ -95,7 +95,7 @@
                     </form>
                 </div>
 
-                <div class="col-span-1 p-2 grid grid-cols-1">
+                <div class="col-span-1 p-2 grid grid-cols-1 bg-white dark:bg-gray-800">
                     <div class="mt-8">
                         <label for="productSelect" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Add Additional Product</label>
                         <div class="flex items-center mt-2">
@@ -113,8 +113,22 @@
                 </div>
             </div>
         </div>
-        <div class="max-w-5xl mx-auto sm:px-4 lg:px-2 bg-gray-200 p-4">
-            Content 2
+        <div class="max-w-5xl mx-auto sm:px-4 lg:px-2 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+
+            <div class="mt-8">
+                <label for="labelInput" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Label</label>
+                <input type="text" id="labelInput" class="form-input rounded-md shadow-sm mt-1 block w-full dark:bg-gray-700 dark:text-gray-200" />
+
+                <label for="descriptionInput" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mt-4">Description</label>
+                <textarea id="descriptionInput" class="form-input rounded-md shadow-sm mt-1 block w-full dark:bg-gray-700 dark:text-gray-200"></textarea>
+
+                <button type="button" id="addLabelButton" class="mt-4 inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-gray-600 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 dark:focus:ring-gray-600 disabled:opacity-25 transition ease-in-out duration-150">
+                    Add Label and Description
+                </button>
+
+                <ul id="labelList" class="mt-4 list-disc list-inside text-gray-700 dark:text-gray-200"></ul>
+            </div>
+
         </div>
     </div>
     <div class="container d-flex flex-column align-items-center justify-content-center">
