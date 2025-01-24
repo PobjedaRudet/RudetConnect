@@ -133,8 +133,6 @@
     </div>
     <div class="container d-flex flex-column align-items-center justify-content-center">
 
+
 </x-app-layout>
 @vite('resources/js/nalog.js')
-
-
-
