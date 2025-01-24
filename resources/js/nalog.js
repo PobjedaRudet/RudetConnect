@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const productSelect = document.getElementById('productSelect');
     const productList = document.getElementById('productList');
     const productQuantity = document.getElementById('productQuantity');
-    productQuantity.classList.add('half-width'); // Add this line
+    productQuantity.classList.add('half-width');
     console.log("Uciatano.");
 
     addProductButton.addEventListener('click', function () {
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Create the list item for the selected product
             const listItem = document.createElement('div');
-            listItem.className = 'flex justify-between p-4';
+            listItem.className = 'flex justify-between p-2';
 
             const nameSpan = document.createElement('span');
             nameSpan.textContent = productName;
@@ -42,6 +42,17 @@ document.addEventListener('DOMContentLoaded', function () {
             const qtySpan = document.createElement('span');
             qtySpan.textContent = quantity;
             listItem.appendChild(qtySpan);
+
+            // Create the remove button
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'Remove';
+            removeButton.className = 'remove-button';
+            listItem.appendChild(removeButton);
+
+            // Add event listener to remove the item
+            removeButton.addEventListener('click', function () {
+                productList.removeChild(listItem);
+            });
 
             productList.appendChild(listItem);
 

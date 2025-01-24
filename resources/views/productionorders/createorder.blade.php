@@ -88,7 +88,7 @@
                     </form>
                 </div>
 
-                <div class="col-span-1 p-2 grid grid-cols-1 bg-white dark:bg-gray-800">
+                <div class="flex col-span-1 p-1 grid grid-cols-1 bg-white dark:bg-gray-800">
                     <div class="mt-8">
                         <label for="productSelect" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Add Additional Product</label>
 
@@ -99,9 +99,10 @@
                                 @endforeach
                             </select>
                             <input type="text" id="productQuantity" class="form-input rounded-md shadow-sm ml-4 dark:bg-gray-700 dark:text-gray-200" style="width: 85px;" placeholder="Količina" />
-                            <button type="button" id="addProductButton" class="ml-4 inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-gray-600 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 dark:focus:ring-gray-600 disabled:opacity-25 transition ease-in-out duration-150">
+                            <button type="button" id="addProductButton" class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-gray-600 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 dark:focus:ring-gray-600 disabled:opacity-25 transition ease-in-out duration-150">
                                 Dodaj
                             </button>
+
                         </div>
                         <ul id="productList" class="mt-4 list-disc list-inside text-gray-700 dark:text-gray-200"></ul>
                     </div>
