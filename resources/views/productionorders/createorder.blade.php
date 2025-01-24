@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="flex py-12">
-        <div class="flex max-w-5xl mx-auto sm:px-4 lg:px-2">
+        <div class="flex max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white grid grid-cols-3 gap-4 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="col-span-2 p-6 text-gray-900 dark:text-gray-100 border-r border-gray-300 dark:border-gray-700">
                     {{ __("Kreiraj nalog.") }}
@@ -74,14 +74,7 @@
                                 <label for="Napomena" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Napomena</label>
                                 <textarea name="Napomena" id="napomena" class="form-input rounded-md shadow-sm mt-1 block w-full dark:bg-gray-700 dark:text-gray-200" required>{{ old('Napomena') }}</textarea>
                             </div>
-                            <div class="col-span-2">
-                                <label for="ProizvodId" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Proizvod ID</label>
-                                <select name="ProizvodId" id="proizvodId" class="form-input rounded-md shadow-sm mt-1 block w-full dark:bg-gray-700 dark:text-gray-200" required>
-                                    @foreach($products as $product)
-                                        <option value="{{ $product->id }}" {{ old('ProizvodId') == $product->id ? 'selected' : '' }}>{{ $product->Naziv }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+
                         </div>
                         <div class="flex items-center justify-end mt-4">
                             <button type="submit"
@@ -89,7 +82,7 @@
                                            font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-gray-600
                                            focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 dark:focus:ring-gray-600
                                            disabled:opacity-25 transition ease-in-out duration-150">
-                                Submit
+                                Pregled
                             </button>
                         </div>
                     </form>
@@ -98,37 +91,22 @@
                 <div class="col-span-1 p-2 grid grid-cols-1 bg-white dark:bg-gray-800">
                     <div class="mt-8">
                         <label for="productSelect" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Add Additional Product</label>
+
                         <div class="flex items-center mt-2">
-                            <select id="productSelect" class="form-input rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-200">
+                            <select id="productSelect" class="form-input rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-200" style="width: 200px;">
                                 @foreach($products as $product)
                                     <option value="{{ $product->id }}">{{ $product->Naziv }}</option>
                                 @endforeach
                             </select>
+                            <input type="text" id="productQuantity" class="form-input rounded-md shadow-sm ml-4 dark:bg-gray-700 dark:text-gray-200" style="width: 85px;" placeholder="Količina" />
                             <button type="button" id="addProductButton" class="ml-4 inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-gray-600 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 dark:focus:ring-gray-600 disabled:opacity-25 transition ease-in-out duration-150">
-                                Add Product
+                                Dodaj
                             </button>
                         </div>
                         <ul id="productList" class="mt-4 list-disc list-inside text-gray-700 dark:text-gray-200"></ul>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="max-w-5xl mx-auto sm:px-4 lg:px-2 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-
-            <div class="mt-8">
-                <label for="labelInput" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Label</label>
-                <input type="text" id="labelInput" class="form-input rounded-md shadow-sm mt-1 block w-full dark:bg-gray-700 dark:text-gray-200" />
-
-                <label for="descriptionInput" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mt-4">Description</label>
-                <textarea id="descriptionInput" class="form-input rounded-md shadow-sm mt-1 block w-full dark:bg-gray-700 dark:text-gray-200"></textarea>
-
-                <button type="button" id="addLabelButton" class="mt-4 inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-gray-600 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 dark:focus:ring-gray-600 disabled:opacity-25 transition ease-in-out duration-150">
-                    Add Label and Description
-                </button>
-
-                <ul id="labelList" class="mt-4 list-disc list-inside text-gray-700 dark:text-gray-200"></ul>
-            </div>
-
         </div>
     </div>
     <div class="container d-flex flex-column align-items-center justify-content-center">
