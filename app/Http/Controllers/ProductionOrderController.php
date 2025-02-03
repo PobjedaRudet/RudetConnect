@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\ProductionOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Models\ProductionOrderDetails;
 
 class ProductionOrderController extends Controller
 {
@@ -40,15 +41,42 @@ class ProductionOrderController extends Controller
      */
     public function store(Request $request)
     {
-        //spasi kreiranu formu
-        $request->validate([
-            'product_id' => 'required',
-            'quantity' => 'required',
-            'due_date' => 'required',
+        $validatedData = $request->validate([
+            'OrderNumber' => 'required|string',
+            'OrderDate' => 'required|date',
+            'Description' => 'required|string',
+            'Metraza' => 'required|numeric',
+            'Status' => 'required|string',
+            'VrstaProvodnika' => 'required|string',
+            'Tip' => 'required|string',
+            'BojaDuzinaProvodnika' => 'required|string',
+            'Pakovanje' => 'required|string',
+            'AtestPaketa' => 'required|string',
+            'CeOznaka' => 'required|string',
+            'KlasaOpasnosti' => 'required|string',
+            'UNBroj' => 'required|string',
+            'RokIsporuke' => 'required|string',
+            'DatumPredaje' => 'required|date',
+            'DatumPrijema' => 'required|date',
+            'Napomena' => 'required|string',
+            'products' => 'required|array', // Proizvodi su obavezni
         ]);
-        //spremi podatke u bazu
-        ProductionOrder::create($request->all());
+
+        // Kreiraj novi nalog
+        $order = ProductionOrder::create($validatedData);
+
+        // Sačuvaj detalje naloga (proizvode)
+        foreach ($request->products as $product) {
+            ProductionOrderDetails::create([
+                'production_order_id' => $order->id,
+                'product_id' => $product['productId'],
+                'product_value' => $product['productValue'],
+            ]);
+        }
+
+        return response()->json(['message' => 'Nalog je uspešno sačuvan!'], 200);
     }
+
 
     /**
      * Display the specified resource.
@@ -81,4 +109,9 @@ class ProductionOrderController extends Controller
     {
         //
     }
+       //create uploadorder function
+       public function uploadorder()
+       {
+           return view('productionorders.uploadorder');
+       }
 }

@@ -14,24 +14,17 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('Naziv');
+            $table->string('Tip');
             $table->string('SkraceniNaziv');
             $table->string('JedinicaMjere');
             $table->string('Code');
-            $table->decimal('NetExplosiveQuantity', 8, 2);
             $table->decimal('UoM_meter', 8, 2);
-            $table->decimal('UoM_cubicmeter', 8, 2);
-            $table->decimal('GrossWeight', 8, 2);
             $table->decimal('UsporenjeMs', 8, 2);
             $table->string('UNNumber');
             $table->string('HazardClass');
             $table->string('CEMarkNumber');
             $table->string('NumeraProizvoda');
-            $table->date('RokTrajanja');
-            $table->string('ProductCode');
             $table->string('VrstaProvodnika');
-            $table->string('TypeOfProduct');
-            $table->string('ADRnaziv');
-
             $table->timestamps();
         });
     }

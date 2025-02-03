@@ -22,18 +22,38 @@
                                 <label for="OrderDate" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Order Date</label>
                                 <input type="date" name="OrderDate" id="orderDate" class="form-input rounded-md shadow-sm mt-1 block w-full dark:bg-gray-700 dark:text-gray-200" value="{{ old('OrderDate') }}" required />
                             </div>
-                            <div class="col-span-2">
-                                <label for="Description" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Description</label>
-                                <textarea name="Description" id="description" class="form-input rounded-md shadow-sm mt-1 block w-full dark:bg-gray-700 dark:text-gray-200" required>{{ old('Description') }}</textarea>
+                            <div class="col-span-1">
+                                <label for="Description" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Naziv</label>
+                                {{-- <input name="Description" id="description" class="form-input rounded-md shadow-sm mt-1 block w-full dark:bg-gray-700 dark:text-gray-200" required>{{ old('Description') }}</input> --}}
+                                <datalist id="productSuggestions"></datalist>
+                                <input list="productSuggestions" name="Description" id="productInput" class="form-control rounded-md shadow-sm mt-1 block w-full dark:bg-gray-700 dark:text-gray-200" value="{{ old('Description') }}" placeholder="Unesi naziv proizvoda..." />
+                            </div>
+                            <div class="col-span-1">
+                                <label for="metraza" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Metraža</label>
+                                <input type="number" name="Metraza" id="metraza" class="form-input rounded-md shadow-sm mt-1 block w-full dark:bg-gray-700 dark:text-gray-200" value="{{ old('Metraza') }}" step="0.01" required />
+
                             </div>
                             <div>
                                 <label for="Status" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Status</label>
                                 <input type="text" name="Status" id="status" class="form-input rounded-md shadow-sm mt-1 block w-full dark:bg-gray-700 dark:text-gray-200" value="{{ old('Status') }}" required />
                             </div>
                             <div>
-                                <label for="CurrentEmployee" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Current Employee</label>
-                                <input type="text" name="CurrentEmployee" id="currentEmployee" class="form-input rounded-md shadow-sm mt-1 block w-full dark:bg-gray-700 dark:text-gray-200" value="{{ old('CurrentEmployee') }}" required />
+                                <label for="VrstaProvodnika" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Vrsta provodnika</label>
+                                <select name="VrstaProvodnika" id="vrstaProvodnika" class="form-input rounded-md shadow-sm mt-1 block w-full dark:bg-gray-700 dark:text-gray-200" required>
+                                    <option value="Al" {{ old('VrstaProvodnika') == 'Al' ? 'selected' : '' }}>Al</option>
+                                    <option value="Cu" {{ old('VrstaProvodnika') == 'Cu' ? 'selected' : '' }}>Cu</option>
+                                    <option value="Fe" {{ old('VrstaProvodnika') == 'Fe' ? 'selected' : '' }}>Fe</option>
+                                    <option value="V" {{ old('VrstaProvodnika') == 'V' ? 'selected' : '' }}>V</option>
+                                    <option value="Zn" {{ old('VrstaProvodnika') == 'Zn' ? 'selected' : '' }}>Zn</option>
+                                </select>
                             </div>
+                            <div class="col-span-1">
+                                <label for="Tip" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Tip</label>
+                                <select name="Tip" id="tip" class="form-input rounded-md shadow-sm mt-1 block w-full dark:bg-gray-700 dark:text-gray-200" required>
+                                    <option value="A" {{ old('Tip') == 'A' ? 'selected' : '' }}>A</option>
+                                    <option value="B" {{ old('Tip') == 'B' ? 'selected' : '' }}>B</option>
+                                </select>
+                             </div>
                             <div>
                                 <label for="BojaDuzinaProvodnika" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Boja Duzina Provodnika</label>
                                 <input type="text" name="BojaDuzinaProvodnika" id="bojaDuzinaProvodnika" class="form-input rounded-md shadow-sm mt-1 block w-full dark:bg-gray-700 dark:text-gray-200" value="{{ old('BojaDuzinaProvodnika') }}" required />
@@ -77,8 +97,7 @@
 
                         </div>
                         <div class="flex items-center justify-end mt-4">
-                            <button type="submit"
-                                    class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-700 border border-transparent rounded-md
+                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-700 border border-transparent rounded-md
                                            font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-gray-600
                                            focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 dark:focus:ring-gray-600
                                            disabled:opacity-25 transition ease-in-out duration-150">
@@ -90,12 +109,12 @@
 
                 <div class="flex col-span-1 p-1 grid grid-cols-1 bg-white dark:bg-gray-800">
                     <div class="mt-8">
-                        <label for="productSelect" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Add Additional Product</label>
+                        <label for="productSelect" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Numere proizvoda</label>
 
-                        <div class="flex items-center mt-2">
+                       {{--   <div class="flex items-center mt-2">
                             <select id="productSelect" class="form-input rounded-md shadow-sm dark:bg-gray-700 dark:text-gray-200" style="width: 200px;">
                                 @foreach($products as $product)
-                                    <option value="{{ $product->id }}">{{ $product->Naziv }}</option>
+                                <option value="{{ $product->id }}">{{ $product->Naziv }}</option>
                                 @endforeach
                             </select>
                             <input type="text" id="productQuantity" class="form-input rounded-md shadow-sm ml-4 dark:bg-gray-700 dark:text-gray-200" style="width: 85px;" placeholder="Količina" />
@@ -103,8 +122,10 @@
                                 Dodaj
                             </button>
 
-                        </div>
+                        </div>  --}}
                         <ul id="productList" class="mt-4 list-disc list-inside text-gray-700 dark:text-gray-200"></ul>
+                        <ul id="productListNew" class="mt-4 list-disc list-inside text-gray-700 dark:text-gray-200"></ul>
+
                     </div>
                 </div>
             </div>

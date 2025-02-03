@@ -1,67 +1,341 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const addProductButton = document.getElementById('addProductButton');
-    const productSelect = document.getElementById('productSelect');
-    const productList = document.getElementById('productList');
-    const productQuantity = document.getElementById('productQuantity');
-    productQuantity.classList.add('half-width');
-    console.log("Uciatano.");
+// Funkcija za inicijalizaciju
+function initialize() {
+    console.log('DOM loaded');
+    setupProductInput();
+    setupCeOznakaFetchBihnel();
+    setupProductList();
+    setupProductListBihnel()
+    //posaljiNalog();
+}
 
-    addProductButton.addEventListener('click', function () {
-        const selectedProduct = productSelect.options[productSelect.selectedIndex];
-        const productId = selectedProduct.value;
-        const productName = selectedProduct.text;
-        const quantity = productQuantity.value;
+// Postavljanje događaja za pretragu proizvoda
+function setupProductInput() {
+    const productInput = document.getElementById('productInput');
+    const datalist = document.getElementById('productSuggestions');
 
-        console.log("Dodato");
+    if (productInput && datalist) {
+        productInput.addEventListener('input', async () => {
+            const input = productInput.value;
+            console.log('Selected value:', productInput.value);
+            const selectedValue = productInput.value;
+            const options = Array.from(datalist.options).map(option => option.value);
+            if (options.includes(selectedValue)) {
+                console.log('Selected value from datalist:', selectedValue);
+                // Perform actions based on the selected value
+                if (selectedValue.includes('BIHNEL')) {
+                    console.log('Selected value includes BIHNEL');
+                    // how to disable field metraza and color grey
+                    document.getElementById('metraza').style.backgroundColor = 'grey';
+                    document.getElementById('metraza').disabled = true;
+                    document.getElementById('vrstaProvodnika').style.backgroundColor = 'grey';
+                    document.getElementById('vrstaProvodnika').disabled = true;
+                    document.getElementById('tip').style.backgroundColor = 'grey';
+                    document.getElementById('tip').disabled = true;
+                    setupCeOznakaFetchBihnel();
+                    setupProductListBihnel();
+                } else if (selectedValue.includes('DK-')) {
+                    console.log('Selected value includes DK proizvodi');
+                }
+                else {
+                    //enable these fields
+                    document.getElementById('metraza').style.backgroundColor = '';
+                    document.getElementById('metraza').disabled = false;
+                    document.getElementById('vrstaProvodnika').style.backgroundColor = '';
+                    document.getElementById('vrstaProvodnika').disabled = false;
+                    document.getElementById('tip').style.backgroundColor = '';
+                    document.getElementById('tip').disabled = false;
+                    setupProductList();
+                }
 
-        if (productId && quantity) {
-            // Check if the headers already exist
-            if (!document.querySelector('.product-list-header')) {
-                const headerRow = document.createElement('div');
-                headerRow.className = 'product-list-header flex justify-between p-2';
-
-                const nameHeader = document.createElement('h3');
-                nameHeader.textContent = 'Name';
-                headerRow.appendChild(nameHeader);
-
-                const qtyHeader = document.createElement('h3');
-                qtyHeader.textContent = 'Qty';
-                headerRow.appendChild(qtyHeader);
-
-                productList.appendChild(headerRow);
             }
+            datalist.innerHTML = ''; // Očisti prethodne sugestije
 
-            // Create the list item for the selected product
-            const listItem = document.createElement('div');
-            listItem.className = 'flex justify-between p-2';
+            if (input.length > 0) {
+                console.log('Fetching data...lista');
+                try {
+                    const response = await fetch(`/products?query=${input}`);
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    const data = await response.json();
 
-            const nameSpan = document.createElement('span');
-            nameSpan.textContent = productName;
-            listItem.appendChild(nameSpan);
+                    const uniqueProducts = new Set();
+                    data.forEach(product => {
+                        if (!uniqueProducts.has(product.SkraceniNaziv)) {
+                            uniqueProducts.add(product.SkraceniNaziv);
+                            const option = document.createElement('option');
+                            option.value = product.SkraceniNaziv;
+                            console.log('Product:', product.SkraceniNaziv);
+                            datalist.appendChild(option);
+                        }
+                    });
+                } catch (error) {
+                    console.error("Error fetching data:f", error);
+                }
+            }
+        });
+    }
+}
 
-            const qtySpan = document.createElement('span');
-            qtySpan.textContent = quantity;
-            listItem.appendChild(qtySpan);
+// Postavljanje događaja za dobijanje CE oznake
+function setupCeOznakaFetch() {
+    console.log('Setting up CE oznaka fetch');
+    const nazivInput = document.getElementById('productInput');
+    const vrstaProvodnikaInput = document.getElementById('vrstaProvodnika');
+    const ceOznakaInput = document.getElementById('ceOznaka');
+    const klasaInput = document.getElementById('klasaOpasnosti');
+    const unBrojInput = document.getElementById('unBroj');
 
-            // Create the remove button
-            const removeButton = document.createElement('button');
-            removeButton.textContent = 'Remove';
-            removeButton.className = 'remove-button';
-            listItem.appendChild(removeButton);
+    if (nazivInput && vrstaProvodnikaInput && ceOznakaInput && klasaInput && unBrojInput) {
+        const fetchCeOznaka = async () => {
+            const naziv = nazivInput.value;
+            const vrstaProvodnika = vrstaProvodnikaInput.value;
 
-            // Add event listener to remove the item
-            removeButton.addEventListener('click', function () {
-                productList.removeChild(listItem);
+            if (naziv && vrstaProvodnika) {
+                try {
+                    const response = await fetch(`/getCeOznaka?naziv=${naziv}&vrstaProvodnika=${vrstaProvodnika}`);
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    const data = await response.json();
+
+                    ceOznakaInput.value = data.CEMarkNumber;
+                    klasaInput.value = data.HazardClass;
+                    unBrojInput.value = data.UNNumber;
+                } catch (error) {
+                    console.error("Error fetching dataW:", error);
+                }
+            }
+        };
+
+        nazivInput.addEventListener('input', fetchCeOznaka);
+        vrstaProvodnikaInput.addEventListener('change', fetchCeOznaka);
+    }
+}
+
+function setupCeOznakaFetchBihnel() {
+    console.log('Setting up CE oznaka fetch Bihnel');
+    const nazivInput = document.getElementById('productInput');
+    //const vrstaProvodnikaInput = document.getElementById('vrstaProvodnika');
+    const ceOznakaInput = document.getElementById('ceOznaka');
+    const klasaInput = document.getElementById('klasaOpasnosti');
+    const unBrojInput = document.getElementById('unBroj');
+
+    if (nazivInput && ceOznakaInput && klasaInput && unBrojInput) {
+        const fetchCeOznaka = async () => {
+            const naziv = nazivInput.value;
+            //const vrstaProvodnika = vrstaProvodnikaInput.value;
+
+            if (naziv) {
+                try {
+                    const response = await fetch(`/getCeOznakaBihnel?naziv=${naziv}`);
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    console.log("Ovo je ce novi resp:"+response);
+                    const data = await response.json();
+
+                    ceOznakaInput.value = data.CEMarkNumber;
+                    klasaInput.value = data.HazardClass;
+                    unBrojInput.value = data.UNNumber;
+                } catch (error) {
+                    console.error("Error fetching dataP:", error);
+                }
+            }
+        };
+
+        nazivInput.addEventListener('input', fetchCeOznaka);
+
+    }
+}
+
+// Postavljanje događaja za prikaz liste proizvoda
+function setupProductList() {
+    console.log('Setting up product list');
+    const productInput = document.getElementById('productInput');
+    const metrazaInput = document.getElementById('metraza');
+    const vrstaProvodnikaInput = document.getElementById('vrstaProvodnika');
+    const tipInput = document.getElementById('tip');
+    const productListNew = document.getElementById('productListNew');
+
+    if (productInput && metrazaInput && vrstaProvodnikaInput && productListNew) {
+        const fetchProducts = async () => {
+            const input = productInput.value;
+            const metraza = metrazaInput.value;
+            const provodnik = vrstaProvodnikaInput.value;
+            const tip = tipInput.value;
+            productListNew.innerHTML = ''; // Očisti prethodnu listu
+
+            if (input.length > 0 && metraza.length > 0) {
+                try {
+                    const response = await fetch(`/productslist?query=${input}&uom_meter=${metraza}&provodnik=${provodnik}&tip=${tip}`);
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    const data = await response.json();
+                    console.log(data);
+
+                    // Sort data by productNumera in ascending order
+                    data.sort((a, b) => a.NumeraProizvoda - b.NumeraProizvoda);
+
+                    data.forEach(product => {
+                        const listItem = document.createElement('li');
+                        listItem.style.listStyleType = 'none';
+                        listItem.classList.add('mb-2', 'flex', 'items-center');
+
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.name = 'selectedProducts';
+                        checkbox.value = product.id;
+                        checkbox.classList.add('form-check-input', 'mr-2');
+
+                        const productNumera = product.NumeraProizvoda < 10 ? '0' + product.NumeraProizvoda : product.NumeraProizvoda;
+                        const productText = document.createTextNode(` Numera: ${productNumera}`);
+
+                        const inputBox = document.createElement('input');
+                        inputBox.type = 'text';
+                        inputBox.name = 'productValue';
+                        inputBox.classList.add('form-control', 'rounded-md', 'shadow-sm', 'ml-2', 'dark:bg-gray-700', 'dark:text-gray-200');
+                        inputBox.style.maxWidth = '100px';
+                        inputBox.style.height = '30px';
+
+                        listItem.appendChild(checkbox);
+                        listItem.appendChild(productText);
+                        listItem.appendChild(inputBox);
+                        productListNew.appendChild(listItem);
+                    });
+                } catch (error) {
+                    console.error("Error fetching data:R", error);
+                }
+            }
+        };
+
+        //productInput.addEventListener('input', fetchProducts);
+        metrazaInput.addEventListener('input', fetchProducts);
+        vrstaProvodnikaInput.addEventListener('change', fetchProducts);
+        tipInput.addEventListener('change', fetchProducts);
+    }
+}
+function setupProductListBihnel() {
+    console.log('Setting up productlist Bihnel');
+    const productInput = document.getElementById('productInput');
+    console.log("Ovo je product input:"+productInput.value);
+    //const metrazaInput = document.getElementById('metraza');
+    //const vrstaProvodnikaInput = document.getElementById('vrstaProvodnika');
+    //const tipInput = document.getElementById('tip');
+    const productListNew = document.getElementById('productListNew');
+    console.log("Ovo je product list new:"+productListNew.value);
+
+    if (productInput) {
+        const fetchProducts = async () => {
+            const input = productInput.value;
+            console.log("Ovo je input:"+input);
+            //const metraza = metrazaInput.value;
+            //const provodnik = vrstaProvodnikaInput.value;
+            //const tip = tipInput.value;
+            productListNew.innerHTML = ''; // Očisti prethodnu listu
+
+            if (input.length > 0) {
+                try {
+                    const response = await fetch(`/productslistBihnel?query=${input}`);
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    console.log("Ovo je BIHNEL  response:"+response);
+                    const data = await response.json();
+                    console.log(data);
+
+                    // Sort data by productNumera in ascending order
+                    data.sort((a, b) => a.NumeraProizvoda - b.NumeraProizvoda);
+
+                    data.forEach(product => {
+                        const listItem = document.createElement('li');
+                        listItem.style.listStyleType = 'none';
+                        listItem.classList.add('mb-2', 'flex', 'items-center');
+
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.name = 'selectedProducts';
+                        checkbox.value = product.id;
+                        checkbox.classList.add('form-check-input', 'mr-2');
+
+                        const productNumera = product.UoM_meter;
+                        const productText = document.createTextNode(` Metraža: ${productNumera}`);
+
+                        const inputBox = document.createElement('input');
+                        inputBox.type = 'text';
+                        inputBox.name = 'productValue';
+                        inputBox.classList.add('form-control', 'rounded-md', 'shadow-sm', 'ml-2', 'dark:bg-gray-700', 'dark:text-gray-200');
+                        inputBox.style.maxWidth = '100px';
+                        inputBox.style.height = '30px';
+
+                        listItem.appendChild(checkbox);
+                        listItem.appendChild(productText);
+                        listItem.appendChild(inputBox);
+                        productListNew.appendChild(listItem);
+                    });
+                } catch (error) {
+                    console.error("Error fetching data:c", error);
+                }
+            }
+        };
+        fetchProducts();
+
+       //productInput.addEventListener('input', fetchProducts);
+       // metrazaInput.addEventListener('input', fetchProducts);
+       // vrstaProvodnikaInput.addEventListener('change', fetchProducts);
+        //tipInput.addEventListener('change', fetchProducts);
+    }
+    else{
+        console.log("Nema product inputa");
+    }
+}
+
+function posaljiNalog() {
+    const form = document.querySelector('form'); // Forma za unos podataka
+    const productListNew = document.getElementById('productListNew'); // Lista proizvoda
+
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault(); // Sprečava podrazumevano ponašanje forme
+
+        // Prikupi podatke iz forme
+        const formData = new FormData(form);
+        const formObject = {};
+        formData.forEach((value, key) => {
+            formObject[key] = value;
+        });
+
+        // Prikupi podatke iz liste proizvoda
+        const products = [];
+        productListNew.querySelectorAll('li').forEach(item => {
+            const checkbox = item.querySelector('input[type="checkbox"]');
+            const inputBox = item.querySelector('input[type="text"]');
+            if (checkbox && inputBox && checkbox.checked) {
+                products.push({
+                    productId: checkbox.value,
+                    productValue: inputBox.value,
+                });
+            }
+        });
+
+        // Dodaj proizvode u objekat za slanje
+        formObject.products = products;
+
+        try {
+            // Pošalji podatke na server
+            const response = await fetch("{{ route('productionorders.store') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}', // Dodaj CSRF token za sigurnost
+                },
+                body: JSON.stringify(formObject),
             });
 
-            productList.appendChild(listItem);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
 
-            // Create the hidden input for form submission
-            const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = 'additionalProducts[]';
-            hiddenInput.value = `${productId}:${quantity}`;
-            listItem.appendChild(hiddenInput);
+            const result = await response.json();
+            console.log('Success:', result);
+            alert('Podaci su uspešno sačuvani!');
+            window.location.reload(); // Osveži stranicu nakon uspešnog čuvanja
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Došlo je do greške prilikom čuvanja podataka.');
         }
     });
-});
+}
+
+// Pokreni inicijalizaciju kada se DOM učita
+document.addEventListener("DOMContentLoaded", initialize);
