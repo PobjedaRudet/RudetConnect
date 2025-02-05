@@ -15,10 +15,11 @@ class ProductionOrderController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
-        Log::info($products);
+        //$products = Product::all();
+       // Log::info($products);
 
-        return view('productionorders.createorder', compact('products'));
+       // return view('productionorders.createorder', compact('products'));
+       return view('productionorders.createorder');
     }
 
     /**
@@ -88,9 +89,6 @@ class ProductionOrderController extends Controller
 
         try {
             $validatedData = $request->validate([
-                'ime' => 'required|string',
-                'kolicina' => 'required|numeric',
-                'cijena' => 'required|numeric',
                 'orderNumber' => 'nullable|string',
                 'productListNew' => 'required|array|min:1',
                 'productListNew.*.id' => 'required|integer',
@@ -115,9 +113,17 @@ class ProductionOrderController extends Controller
 
             return response()->json(['message' => 'Nalog je uspešno sačuvan!'], 200);
         } catch (\Exception $e) {
-            Log::error("Greška: {$e->getMessage()}");
+            Log::error("GreškaNew: {$e->getMessage()}");
             return response()->json(['message' => 'Došlo je do greške prilikom čuvanja naloga.'], 500);
         }
+    }
+
+    public function getOrderNumber()
+    {
+        $orderNumber = ProductionOrder::max('OrderNumber');
+        $orderNumber = $orderNumber ? $orderNumber + 1 : 1;
+
+        return response()->json(['orderNumber' => $orderNumber]);
     }
 
 

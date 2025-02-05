@@ -7,6 +7,24 @@ function initialize() {
     setupProductListBihnel()
     //posaljiNalog();
     posaljiNoviNalog();
+    getOrderNumber();
+}
+
+// Funkcija za dobijanje rednog broja naloga
+async function getOrderNumber() {
+    try {
+        const response = await fetch('/getOrderNumber');
+        if (!response.ok) throw new Error('Network response was not ok');
+        const data = await response.json();
+        const orderNumberElement = document.getElementById('orderNumber');
+        if (orderNumberElement) {
+            orderNumberElement.value = data.orderNumber;
+        }
+        return data.orderNumber;
+    } catch (error) {
+        console.error("Error fetching order number:", error);
+        return null;
+    }
 }
 
 // Postavljanje događaja za pretragu proizvoda
@@ -188,7 +206,7 @@ function setupProductList() {
                         const inputBox = document.createElement('input');
                         inputBox.type = 'text';
                         inputBox.name = product.id;
-                        inputBox.className="productListNewItem";
+                        inputBox.className = "productListNewItem";
                         inputBox.classList.add('form-control', 'rounded-md', 'shadow-sm', 'ml-2', 'dark:bg-gray-700', 'dark:text-gray-200');
                         inputBox.style.maxWidth = '100px';
                         inputBox.style.height = '30px';
@@ -272,116 +290,87 @@ function setupProductListBihnel() {
     }
 }
 
- /* function posaljiNalog() {
-    const form = document.querySelector('form'); // Forma za unos podataka
-    const productListNew = document.getElementById('productListNew'); // Lista proizvoda
+/* function posaljiNalog() {
+    document.querySelector("form").addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent default form submission
 
-    form.addEventListener('submit', async function (event) {
-        event.preventDefault(); // Sprečava podrazumevano ponašanje forme
-
-        // Prikupi podatke iz forme
-        const formData = new FormData(form);
-        const formObject = {};
-        formData.forEach((value, key) => {
-            formObject[key] = value;
+        let formData = new FormData(this);
+        let productListNew = [...document.querySelectorAll(".productListNewItem")].map(item => {
+            return {
+                id: item.name, // "name" atribut je postavljen na id proizvoda
+                vrijednost: item.value // "value" atribut je vrednost koju korisnik unese
+            };
         });
+        formData.append("productListNew", JSON.stringify(productListNew));
 
-        // Prikupi podatke iz liste proizvoda
-        const products = [];
-        productListNew.querySelectorAll('li').forEach(item => {
-            const checkbox = item.querySelector('input[type="checkbox"]');
-            const inputBox = item.querySelector('input[type="text"]');
-            if (checkbox && inputBox && checkbox.checked) {
-                products.push({
-                    productId: checkbox.value,
-                    productValue: inputBox.value,
-                });
+        fetch(this.action, {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector("input[name=_token]").value
             }
-        });
-
-        // Log collected products
-        console.log('Collected products:', products);
-
-        // Dodaj proizvode u objekat za slanje
-        formObject.products = products;
-        console.log('Proizvodi u formi:', formObject);
-
-        try {
-            // Pošalji podatke na server
-            const response = await fetch("{{ route('productionorders.store') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}', // Dodaj CSRF token za sigurnost
-                },
-                body: JSON.stringify(formObject),
-            });
-
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-
-            const result = await response.json();
-            console.log('Success:', result);
-            alert('Podaci su uspešno sačuvani!');
-
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Došlo je do greške prilikom čuvanja podataka.');
-        }
+        }).then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error(error));
     });
 } */
-    function posaljiNalog() {
-        document.querySelector("form").addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent default form submission
 
-            let formData = new FormData(this);
-            let productListNew = [...document.querySelectorAll(".productListNewItem")].map(item => {
-                return {
-                    id: item.name, // "name" atribut je postavljen na id proizvoda
-                    vrijednost: item.value // "value" atribut je vrednost koju korisnik unese
-                };
-            });
-            formData.append("productListNew", JSON.stringify(productListNew));
+function posaljiNoviNalog() {
+    document.getElementById("pregledBtn").addEventListener("click", function () {
+        const orderNumber = document.getElementById("orderNumber").value;
+        const orderDate = document.getElementById("orderDate").value;
+        const description = document.getElementById("productInput").value;
+        const metraza = document.getElementById("metraza").value;
+        const status = document.getElementById("status").value;
+        const vrstaProvodnika = document.getElementById("vrstaProvodnika").value;
+        const tip = document.getElementById("tip").value;
+        const bojaDuzinaProvodnika = document.getElementById("bojaDuzinaProvodnika").value;
+        const pakovanje = document.getElementById("pakovanje").value;
+        const atestPaketa = document.getElementById("atestPaketa").value;
+        const ceOznaka = document.getElementById("ceOznaka").value;
+        const klasaOpasnosti = document.getElementById("klasaOpasnosti").value;
+        const unBroj = document.getElementById("unBroj").value;
+        const rokIsporuke = document.getElementById("rokIsporuke").value;
+        const datumPredaje = document.getElementById("datumPredaje").value;
+        const datumPrijema = document.getElementById("datumPrijema").value;
+        const napomena = document.getElementById("napomena").value;
 
-            fetch(this.action, {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "X-CSRF-TOKEN": document.querySelector("input[name=_token]").value
-                }
-            }).then(response => response.json())
-              .then(data => console.log(data))
-              .catch(error => console.error(error));
-        });
-    }
+        const podaci = {
+            orderNumber: orderNumber,
+            orderDate: orderDate,
+            description: description,
+            metraza: metraza,
+            status: status,
+            vrstaProvodnika: vrstaProvodnika,
+            tip: tip,
+            bojaDuzinaProvodnika: bojaDuzinaProvodnika,
+            pakovanje: pakovanje,
+            atestPaketa: atestPaketa,
+            ceOznaka: ceOznaka,
+            klasaOpasnosti: klasaOpasnosti,
+            unBroj: unBroj,
+            rokIsporuke: rokIsporuke,
+            datumPredaje: datumPredaje,
+            datumPrijema: datumPrijema,
+            napomena: napomena,
+            productListNew: [...document.querySelectorAll(".productListNewItem")]
+                .filter(item => item.value > 0)
+                .map(item => {
+                    return {
+                        id: item.name, // "name" atribut je postavljen na id proizvoda
+                        vrijednost: item.value // "value" atribut je vrednost koju korisnik unese
+                    };
+                })
+        };
 
-    function posaljiNoviNalog() {
-        document.getElementById("pregledBtn").addEventListener("click", function() {
-            const orderNumber = document.getElementById("orderNumber").value;
-            const podaci = {
-                ime: "Test Proizvod",
-                kolicina: 10,
-                cijena: 150,
-                orderNumber: orderNumber,
-                productListNew : [...document.querySelectorAll(".productListNewItem")]
-                    .filter(item => item.value > 0)
-                    .map(item => {
-                        return {
-                            id: item.name, // "name" atribut je postavljen na id proizvoda
-                            vrijednost: item.value // "value" atribut je vrednost koju korisnik unese
-                        };
-                    })
-            };
-
-            fetch("/productionorders", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-                },
-                body: JSON.stringify(podaci)
-            })
+        fetch("/productionorders", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+            },
+            body: JSON.stringify(podaci)
+        })
             .then(response => {
                 if (response.headers.get('content-type').includes('application/json')) {
                     return response.json();
@@ -397,8 +386,8 @@ function setupProductListBihnel() {
                 alert("Greška pri slanju podataka!");
                 console.error("Error:", error);
             });
-        });
-    }
+    });
+}
 
 
 

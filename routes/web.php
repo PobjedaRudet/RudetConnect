@@ -44,5 +44,6 @@ Route::get('/getCeOznaka', [ProductController::class, 'getCeOznaka']);
 Route::get('/getCeOznakaBihnel', [ProductController::class, 'getCeOznakaBihnel']);
 
 Route::post('/productionorders', [ProductionOrderController::class, 'store'])->name('productionorders.store');
-
+// getOrderNumber
+Route::get('/getOrderNumber', [ProductionOrderController::class, 'getOrderNumber']);
 require __DIR__.'/auth.php';
