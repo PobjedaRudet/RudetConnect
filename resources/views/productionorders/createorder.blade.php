@@ -11,8 +11,10 @@
                 <div class="col-span-2 p-6 text-gray-900 dark:text-gray-100 border-r border-gray-300 dark:border-gray-700">
                     {{ __("Kreiraj nalog.") }}
 
-                    <form method="POST" action="{{ route('productionorders.store') }}">
+                   {{--   <form method="POST" action="{{ route('productionorders.store') }}">  --}}
+                    <form>
                         @csrf
+                        <input type="hidden" name="productListNew" id="productListNewInput">
                         <div class="grid grid-cols-3 gap-6">
                             <div>
                                 <label for="OrderNumber" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Order Number</label>
@@ -103,8 +105,14 @@
                                            disabled:opacity-25 transition ease-in-out duration-150">
                                 Pregled
                             </button>
+                            <button id="pregledBtn" type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-700 border border-transparent rounded-md
+                            font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-gray-600
+                            focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 dark:focus:ring-gray-600
+                            disabled:opacity-25 transition ease-in-out duration-150">Pregled2</button>
                         </div>
-                    </form>
+               //form old
+
+
                 </div>
 
                 <div class="flex col-span-1 p-1 grid grid-cols-1 bg-white dark:bg-gray-800">
@@ -125,7 +133,7 @@
                         </div>  --}}
                         <ul id="productList" class="mt-4 list-disc list-inside text-gray-700 dark:text-gray-200"></ul>
                         <ul id="productListNew" class="mt-4 list-disc list-inside text-gray-700 dark:text-gray-200"></ul>
-
+     </form>
                     </div>
                 </div>
             </div>

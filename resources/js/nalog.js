@@ -6,6 +6,7 @@ function initialize() {
     setupProductList();
     setupProductListBihnel()
     //posaljiNalog();
+    posaljiNoviNalog();
 }
 
 // Postavljanje događaja za pretragu proizvoda
@@ -126,7 +127,7 @@ function setupCeOznakaFetchBihnel() {
                 try {
                     const response = await fetch(`/getCeOznakaBihnel?naziv=${naziv}`);
                     if (!response.ok) throw new Error('Network response was not ok');
-                    console.log("Ovo je ce novi resp:"+response);
+                    console.log("Ovo je ce novi resp:" + response);
                     const data = await response.json();
 
                     ceOznakaInput.value = data.CEMarkNumber;
@@ -186,10 +187,17 @@ function setupProductList() {
 
                         const inputBox = document.createElement('input');
                         inputBox.type = 'text';
-                        inputBox.name = 'productValue';
+                        inputBox.name = product.id;
+                        inputBox.className="productListNewItem";
                         inputBox.classList.add('form-control', 'rounded-md', 'shadow-sm', 'ml-2', 'dark:bg-gray-700', 'dark:text-gray-200');
                         inputBox.style.maxWidth = '100px';
                         inputBox.style.height = '30px';
+
+                        // Store the value entered in the input box
+                        inputBox.addEventListener('input', (event) => {
+                            const value = event.target.value;
+                            console.log(`id:${product.id}, vrijednost:${value}`);
+                        });
 
                         listItem.appendChild(checkbox);
                         listItem.appendChild(productText);
@@ -211,29 +219,18 @@ function setupProductList() {
 function setupProductListBihnel() {
     console.log('Setting up productlist Bihnel');
     const productInput = document.getElementById('productInput');
-    console.log("Ovo je product input:"+productInput.value);
-    //const metrazaInput = document.getElementById('metraza');
-    //const vrstaProvodnikaInput = document.getElementById('vrstaProvodnika');
-    //const tipInput = document.getElementById('tip');
     const productListNew = document.getElementById('productListNew');
-    console.log("Ovo je product list new:"+productListNew.value);
 
-    if (productInput) {
+    if (productInput && productInput.value.trim() !== "") {
         const fetchProducts = async () => {
-            const input = productInput.value;
-            console.log("Ovo je input:"+input);
-            //const metraza = metrazaInput.value;
-            //const provodnik = vrstaProvodnikaInput.value;
-            //const tip = tipInput.value;
+            const input = productInput.value.trim();
             productListNew.innerHTML = ''; // Očisti prethodnu listu
 
             if (input.length > 0) {
                 try {
                     const response = await fetch(`/productslistBihnel?query=${input}`);
                     if (!response.ok) throw new Error('Network response was not ok');
-                    console.log("Ovo je BIHNEL  response:"+response);
                     const data = await response.json();
-                    console.log(data);
 
                     // Sort data by productNumera in ascending order
                     data.sort((a, b) => a.NumeraProizvoda - b.NumeraProizvoda);
@@ -270,18 +267,12 @@ function setupProductListBihnel() {
             }
         };
         fetchProducts();
-
-       //productInput.addEventListener('input', fetchProducts);
-       // metrazaInput.addEventListener('input', fetchProducts);
-       // vrstaProvodnikaInput.addEventListener('change', fetchProducts);
-        //tipInput.addEventListener('change', fetchProducts);
-    }
-    else{
-        console.log("Nema product inputa");
+    } else {
+        console.log("Nema product inputa ili je prazan");
     }
 }
 
-function posaljiNalog() {
+ /* function posaljiNalog() {
     const form = document.querySelector('form'); // Forma za unos podataka
     const productListNew = document.getElementById('productListNew'); // Lista proizvoda
 
@@ -308,8 +299,12 @@ function posaljiNalog() {
             }
         });
 
+        // Log collected products
+        console.log('Collected products:', products);
+
         // Dodaj proizvode u objekat za slanje
         formObject.products = products;
+        console.log('Proizvodi u formi:', formObject);
 
         try {
             // Pošalji podatke na server
@@ -329,13 +324,84 @@ function posaljiNalog() {
             const result = await response.json();
             console.log('Success:', result);
             alert('Podaci su uspešno sačuvani!');
-            window.location.reload(); // Osveži stranicu nakon uspešnog čuvanja
+
         } catch (error) {
             console.error('Error:', error);
             alert('Došlo je do greške prilikom čuvanja podataka.');
         }
     });
-}
+} */
+    function posaljiNalog() {
+        document.querySelector("form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            let formData = new FormData(this);
+            let productListNew = [...document.querySelectorAll(".productListNewItem")].map(item => {
+                return {
+                    id: item.name, // "name" atribut je postavljen na id proizvoda
+                    vrijednost: item.value // "value" atribut je vrednost koju korisnik unese
+                };
+            });
+            formData.append("productListNew", JSON.stringify(productListNew));
+
+            fetch(this.action, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector("input[name=_token]").value
+                }
+            }).then(response => response.json())
+              .then(data => console.log(data))
+              .catch(error => console.error(error));
+        });
+    }
+
+    function posaljiNoviNalog() {
+        document.getElementById("pregledBtn").addEventListener("click", function() {
+            const orderNumber = document.getElementById("orderNumber").value;
+            const podaci = {
+                ime: "Test Proizvod",
+                kolicina: 10,
+                cijena: 150,
+                orderNumber: orderNumber,
+                productListNew : [...document.querySelectorAll(".productListNewItem")]
+                    .filter(item => item.value > 0)
+                    .map(item => {
+                        return {
+                            id: item.name, // "name" atribut je postavljen na id proizvoda
+                            vrijednost: item.value // "value" atribut je vrednost koju korisnik unese
+                        };
+                    })
+            };
+
+            fetch("/productionorders", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                },
+                body: JSON.stringify(podaci)
+            })
+            .then(response => {
+                if (response.headers.get('content-type').includes('application/json')) {
+                    return response.json();
+                } else {
+                    throw new Error('Response is not JSON');
+                }
+            })
+            .then(data => {
+                alert("Podaci su poslani!");
+                console.log(data);
+            })
+            .catch(error => {
+                alert("Greška pri slanju podataka!");
+                console.error("Error:", error);
+            });
+        });
+    }
+
+
+
 
 // Pokreni inicijalizaciju kada se DOM učita
 document.addEventListener("DOMContentLoaded", initialize);
