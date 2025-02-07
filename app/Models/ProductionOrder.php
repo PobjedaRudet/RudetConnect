@@ -27,6 +27,9 @@ class ProductionOrder extends Model
         'DatumPredaje',
         'DatumPrijema',
         'Napomena',
+        'CurrentEmployee',
+
+
 
     ];
 }

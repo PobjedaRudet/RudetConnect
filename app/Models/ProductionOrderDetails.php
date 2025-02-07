@@ -12,6 +12,8 @@ class ProductionOrderDetails extends Model
     protected $fillable = [
         'production_order_id',
         'product_id',
-        'product_value',
+        'quantity',
+        'note',
+
     ];
 }

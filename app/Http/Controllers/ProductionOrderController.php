@@ -7,19 +7,30 @@ use App\Models\ProductionOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\ProductionOrderDetails;
+use Exception;
 
 class ProductionOrderController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+/*     public function index()
     {
-        //$products = Product::all();
-       // Log::info($products);
+        $products = Product::all();
+        Log::info($products);
 
-       // return view('productionorders.createorder', compact('products'));
-       return view('productionorders.createorder');
+        return view('productionorders.createorder', compact('products'));
+    } */
+
+    /**
+     * Display a listing of the orders.
+     */
+    public function orders()
+    {
+        $productionorders = ProductionOrder::all();
+        Log::info($productionorders);
+
+        return view('productionorders.orders', compact('productionorders'));
     }
 
     /**
@@ -28,7 +39,6 @@ class ProductionOrderController extends Controller
     public function create()
     {
         $products = Product::all();
-
         Log::info($products);
         Log::info('Create order');
 
@@ -38,51 +48,6 @@ class ProductionOrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    /* public function store(Request $request)
-    {
-        Log::info("Request: " . json_encode($request->all()));
-        try {
-            $validatedData = $request->validate([
-                'OrderNumber' => 'required|string',
-                'OrderDate' => 'required|date',
-                'Description' => 'required|string',
-                'Metraza' => 'required|numeric',
-                'Status' => 'required|string',
-                'VrstaProvodnika' => 'required|string',
-                'Tip' => 'required|string',
-                'BojaDuzinaProvodnika' => 'required|string',
-                'Pakovanje' => 'required|string',
-                'AtestPaketa' => 'required|string',
-                'CeOznaka' => 'required|string',
-                'KlasaOpasnosti' => 'required|string',
-                'UNBroj' => 'required|string',
-                'RokIsporuke' => 'required|string',
-                'DatumPredaje' => 'required|date',
-                'DatumPrijema' => 'required|date',
-                'Napomena' => 'required|string',
-                'products' => 'required|array|min:1',
-            ]);
-            Log::info("Validacija: " . json_encode($validatedData));
-
-            // Kreiraj novi nalog
-            $order = ProductionOrder::create($validatedData);
-            Log::info("Order: {$order}");
-            // Sačuvaj detalje naloga (proizvode)
-            foreach ($request->products as $product) {
-                ProductionOrderDetails::create([
-                    'production_order_id' => $order->id,
-                    'product_id' => $product['productId'],
-                    'product_value' => $product['productValue'],
-                ]);
-            }
-
-            return response()->json(['message' => 'Nalog je uspešno sačuvan!'], 200);
-        } catch (\Exception $e) {
-            Log::error("Greška: {$e->getMessage()}");
-          //  return response()->json(['message' => 'Došlo je do greške prilikom čuvanja naloga.'], 500);
-        }
-    } */
-
     public function store(Request $request)
     {
         Log::info('Request data:', $request->all());
@@ -92,32 +57,35 @@ class ProductionOrderController extends Controller
                 'orderNumber' => 'nullable|string',
                 'productListNew' => 'required|array|min:1',
                 'productListNew.*.id' => 'required|integer',
-                'productListNew.*.vrijednost' => 'required|numeric',
+                'productListNew.*.quantity' => 'required|numeric',
             ]);
 
             $orderData = $request->except('productListNew');
             $productListNew = $request->input('productListNew', []);
 
-            // Kreiraj novi nalog
+            // Create new order
             $order = ProductionOrder::create($orderData);
             Log::info("Order: {$order}");
 
-            // Sačuvaj detalje naloga (proizvode)
+            // Save order details (products)
             foreach ($productListNew as $product) {
                 ProductionOrderDetails::create([
                     'production_order_id' => $order->id,
                     'product_id' => $product['id'],
-                    'product_value' => $product['vrijednost'],
+                    'quantity' => $product['quantity'],
                 ]);
             }
 
-            return response()->json(['message' => 'Nalog je uspešno sačuvan!'], 200);
-        } catch (\Exception $e) {
-            Log::error("GreškaNew: {$e->getMessage()}");
-            return response()->json(['message' => 'Došlo je do greške prilikom čuvanja naloga.'], 500);
+            return response()->json(['message' => 'Order successfully saved!'], 200);
+        } catch (Exception $e) {
+            Log::error("Error: {$e->getMessage()}");
+            return response()->json(['message' => 'An error occurred while saving the order.'], 500);
         }
     }
 
+    /**
+     * Get the next order number.
+     */
     public function getOrderNumber()
     {
         $orderNumber = ProductionOrder::max('OrderNumber');
@@ -126,11 +94,20 @@ class ProductionOrderController extends Controller
         return response()->json(['orderNumber' => $orderNumber]);
     }
 
-
-
-    public function show(ProductionOrder $productionOrder)
+    /**
+     * Display the specified resource.
+     */
+    public function show($id)
     {
-        //
+        $productionOrder = ProductionOrder::findOrFail($id);
+        Log::info($productionOrder);
+        //$products = ProductionOrderDetails::where('production_order_id', $id)->get();
+        $products = ProductionOrderDetails::where('production_order_id', $id)
+            ->join('products', 'production_order_details.product_id', '=', 'products.id')
+            ->select('production_order_details.*', 'products.NumeraProizvoda')
+            ->get();
+
+        return view('productionorders.show', compact('productionOrder', 'products'));
     }
 
     /**
@@ -163,5 +140,9 @@ class ProductionOrderController extends Controller
     public function uploadorder()
     {
         return view('productionorders.uploadorder');
+    }
+    public function test()
+    {
+        return view('productionorders.test');
     }
 }

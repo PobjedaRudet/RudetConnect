@@ -20,16 +20,17 @@ return new class extends Migration
             $table->string('CurrentEmployee');
             $table->string('BojaDuzinaProvodnika')->nullable();
             $table->string('Pakovanje')->nullable();
+            $table->string('Tip')->nullable();
             $table->string('AtestPaketa')->nullable();
             $table->string('CeOznaka')->nullable();
             $table->string('KlasaOpasnosti')->nullable();
             $table->string('UNBroj')->nullable();
+            $table->string('VrstaProvodnika')->nullable();
+            $table->string('Metraza')->nullable();
             $table->string('RokIsporuke')->nullable();
             $table->date('DatumPredaje')->nullable();
             $table->date('DatumPrijema')->nullable();
             $table->string('Napomena')->nullable();
-            $table->unsignedBigInteger('ProizvodId');
-            $table->foreign('ProizvodId')->references('id')->on('products')->onDelete('cascade');
             $table->timestamps();
         });
     }

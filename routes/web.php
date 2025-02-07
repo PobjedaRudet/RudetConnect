@@ -5,7 +5,6 @@ use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductionOrderController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\WordController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -22,15 +21,19 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/productionorders/orders', function () {
-        return view('productionorders.orders');
-    })->name('productionorders.orders');
-    Route::get('/productionorders/createorder', [ProductionOrderController::class, 'index'])->name('productionorders.createorder');
+    Route::get('/productionorders/createorder', [ProductionOrderController::class, 'create'])->name('productionorders.createorder');
+    Route::get('/productionorders/orders', [ProductionOrderController::class, 'orders'])->name('productionorders.orders');
+    Route::get('/productionorders/test', [ProductionOrderController::class, 'test'])->name('productionorders.test');
+    Route::get('/productionorders/{id}', [ProductionOrderController::class, 'show'])->name('productionorders.show');
+
+
+    Route::get('/productionorders/{id}/edit', [ProductionOrderController::class, 'edit'])->name('productionorders.edit');
     //Route [productionorders.store] not defined.
     Route::post('/productionorders/store', [ProductionOrderController::class, 'store'])->name('productionorders.store');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::delete('/productionorders/{id}', [ProductionOrderController::class, 'destroy'])->name('productionorders.destroy');
     //create route for uploadorder.blade.php file
     Route::get('/productionorders/uploadorder', [ProductionOrderController::class, 'uploadorder'])->name('productionorders.uploadorder');
 });

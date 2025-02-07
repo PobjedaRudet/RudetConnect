@@ -214,7 +214,7 @@ function setupProductList() {
                         // Store the value entered in the input box
                         inputBox.addEventListener('input', (event) => {
                             const value = event.target.value;
-                            console.log(`id:${product.id}, vrijednost:${value}`);
+                            console.log(`id:${product.id}, quantity:${value}`);
                         });
 
                         listItem.appendChild(checkbox);
@@ -290,34 +290,11 @@ function setupProductListBihnel() {
     }
 }
 
-/* function posaljiNalog() {
-    document.querySelector("form").addEventListener("submit", function (event) {
-        event.preventDefault(); // Prevent default form submission
-
-        let formData = new FormData(this);
-        let productListNew = [...document.querySelectorAll(".productListNewItem")].map(item => {
-            return {
-                id: item.name, // "name" atribut je postavljen na id proizvoda
-                vrijednost: item.value // "value" atribut je vrednost koju korisnik unese
-            };
-        });
-        formData.append("productListNew", JSON.stringify(productListNew));
-
-        fetch(this.action, {
-            method: "POST",
-            body: formData,
-            headers: {
-                "X-CSRF-TOKEN": document.querySelector("input[name=_token]").value
-            }
-        }).then(response => response.json())
-            .then(data => console.log(data))
-            .catch(error => console.error(error));
-    });
-} */
 
 function posaljiNoviNalog() {
     document.getElementById("pregledBtn").addEventListener("click", function () {
         const orderNumber = document.getElementById("orderNumber").value;
+        const user_id = document.getElementById("user_id").value;
         const orderDate = document.getElementById("orderDate").value;
         const description = document.getElementById("productInput").value;
         const metraza = document.getElementById("metraza").value;
@@ -336,29 +313,30 @@ function posaljiNoviNalog() {
         const napomena = document.getElementById("napomena").value;
 
         const podaci = {
-            orderNumber: orderNumber,
-            orderDate: orderDate,
-            description: description,
+            OrderNumber: orderNumber,
+            CurrentEmployee: user_id,
+            OrderDate: orderDate,
+            Description: description,
             metraza: metraza,
-            status: status,
-            vrstaProvodnika: vrstaProvodnika,
-            tip: tip,
-            bojaDuzinaProvodnika: bojaDuzinaProvodnika,
-            pakovanje: pakovanje,
-            atestPaketa: atestPaketa,
-            ceOznaka: ceOznaka,
-            klasaOpasnosti: klasaOpasnosti,
-            unBroj: unBroj,
-            rokIsporuke: rokIsporuke,
-            datumPredaje: datumPredaje,
-            datumPrijema: datumPrijema,
-            napomena: napomena,
+            Status: status,
+            VrstaProvodnika: vrstaProvodnika,
+            Tip: tip,
+            BojaDuzinaProvodnika: bojaDuzinaProvodnika,
+            Pakovanje: pakovanje,
+            AtestPaketa: atestPaketa,
+            CeOznaka: ceOznaka,
+            KlasaOpasnosti: klasaOpasnosti,
+            UNBroj: unBroj,
+            RokIsporuke: rokIsporuke,
+            DatumPredaje: datumPredaje,
+            DatumPrijema: datumPrijema,
+            Napomena: napomena,
             productListNew: [...document.querySelectorAll(".productListNewItem")]
                 .filter(item => item.value > 0)
                 .map(item => {
                     return {
                         id: item.name, // "name" atribut je postavljen na id proizvoda
-                        vrijednost: item.value // "value" atribut je vrednost koju korisnik unese
+                        quantity: item.value // "value" atribut je vrednost koju korisnik unese
                     };
                 })
         };
