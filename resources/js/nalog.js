@@ -314,7 +314,7 @@ function posaljiNoviNalog() {
 
         const podaci = {
             OrderNumber: orderNumber,
-            CurrentEmployee: user_id,
+            user_id: user_id,
             OrderDate: orderDate,
             Description: description,
             metraza: metraza,

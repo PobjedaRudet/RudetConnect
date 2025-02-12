@@ -6,8 +6,9 @@
     </x-slot>
     <div class="flex py-12">
         <div class="flex max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white grid grid-cols-3 gap-4 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="col-span-1 p-6 text-gray-900 dark:text-gray-100 border-r border-gray-300 dark:border-gray-700">
+            <div class="bg-white grid grid-cols-3 gap-3 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                {{--  Prvi dio  --}}
+                <div class="col-span-1 p-6 text-gray-900 dark:text-gray-100 ">
                     <table class="min-w-full divide-y divide-gray-200">
                         <caption class="caption-top text-lg font-semibold text-gray-700">
                             Production Order Details
@@ -38,17 +39,16 @@
                     <br>
 
 
-                    <div class="text-right">
-                        <a href="{{ route('productionorders.orders') }}" class="inline-flex items-center px-4 py-2 bg-green-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 focus:outline-none focus:border-green-700 focus:ring focus:ring-green-200 active:bg-green-700 disabled:opacity-25 transition">Back to Orders</a>
-                    </div>
+
 
                 </div>
+                     {{--  Srednji dio  --}}
                 <div class="col-span-1 p-6 text-gray-900 dark:text-gray-100 border-r border-gray-300 dark:border-gray-700">
                     <table class="min-w-full divide-y divide-gray-200">
                         <caption class="caption-top text-lg font-semibold text-gray-700">
-                            Production Order Details
+                            &nbsp;
                         </caption>
-                        <thead class="bg-gray-50">
+                        <thead class="bg-white divide-y divide-gray-200">
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product:</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ $productionOrder->Description }}</th>
@@ -67,10 +67,22 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Broj naloga:</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $productionOrder->OrderNumber }}/{{ \Carbon\Carbon::parse($productionOrder->Orderdate)->year }}</td>
                             </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Broj naloga:</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $productionOrder->OrderNumber }}/{{ \Carbon\Carbon::parse($productionOrder->Orderdate)->year }}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Broj naloga:</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $productionOrder->OrderNumber }}/{{ \Carbon\Carbon::parse($productionOrder->Orderdate)->year }}</td>
+                            </tr>
 
                         </tbody>
                     </table>
+                    <div class="text-right mt-4">
+                        <a href="{{ route('productionorders.orders') }}" class="inline-flex items-center px-4 py-2 bg-green-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 focus:outline-none focus:border-green-700 focus:ring focus:ring-green-200 active:bg-green-700 disabled:opacity-25 transition">Back to Orders</a>
+                    </div>
                 </div>
+
                 {{--  Drugi dio  --}}
                 <div class="col-span-1 p-6 text-gray-900 dark:text-gray-100">
                     <div class="flex flex-col">

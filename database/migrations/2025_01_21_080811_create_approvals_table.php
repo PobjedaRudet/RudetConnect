@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('approvals', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('UserId');
-            $table->string('Funkcija', 50);
-            $table->boolean('Odobreno');
             $table->dateTime('DatumOdobravanja');
-            $table->string('Komentar', 255);
+            $table->unsignedBigInteger('ProductionOrderId');
+            $table->foreign('ProductionOrderId')->references('id')->on('production_orders')->onDelete('cascade');
+            $table->string('Komentar', 255)->nullable();
             $table->foreign('UserId')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });

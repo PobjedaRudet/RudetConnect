@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\DocxController;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductionOrderController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -24,8 +26,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/productionorders/createorder', [ProductionOrderController::class, 'create'])->name('productionorders.createorder');
     Route::get('/productionorders/orders', [ProductionOrderController::class, 'orders'])->name('productionorders.orders');
     Route::get('/productionorders/test', [ProductionOrderController::class, 'test'])->name('productionorders.test');
+
+    // Route to display the page with the button
+    Route::get('/send-email', [EmailController::class, 'showEmailPage']);
+
+    // Route to handle the button click and send the email
+    Route::post('/send-email', [EmailController::class, 'sendEmail'])->name('send.email');
     Route::get('/productionorders/{id}', [ProductionOrderController::class, 'show'])->name('productionorders.show');
 
+    Route::get('/update-order-status/{token}', [ProductionOrderController::class, 'updateStatus'])->name('update.order.status');
 
     Route::get('/productionorders/{id}/edit', [ProductionOrderController::class, 'edit'])->name('productionorders.edit');
     //Route [productionorders.store] not defined.
@@ -39,7 +48,6 @@ Route::middleware('auth')->group(function () {
 });
 Route::post('/upload', [FileUploadController::class, 'upload'])->name('upload');
 Route::get('/upload', [FileUploadController::class, 'index'])->name('upload');
-Route::get('view-docx/{filename}', [DocxController::class, 'viewDocx']);
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/productslist', [ProductController::class, 'numeredlist']);
 Route::get('/productslistBihnel', [ProductController::class, 'numeredlistBihnel']);
@@ -49,4 +57,4 @@ Route::get('/getCeOznakaBihnel', [ProductController::class, 'getCeOznakaBihnel']
 Route::post('/productionorders', [ProductionOrderController::class, 'store'])->name('productionorders.store');
 // getOrderNumber
 Route::get('/getOrderNumber', [ProductionOrderController::class, 'getOrderNumber']);
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

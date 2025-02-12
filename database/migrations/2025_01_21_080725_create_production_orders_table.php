@@ -17,7 +17,6 @@ return new class extends Migration
             $table->date('OrderDate');
             $table->text('Description')->nullable();
             $table->string('Status');
-            $table->string('CurrentEmployee');
             $table->string('BojaDuzinaProvodnika')->nullable();
             $table->string('Pakovanje')->nullable();
             $table->string('Tip')->nullable();
@@ -30,7 +29,13 @@ return new class extends Migration
             $table->string('RokIsporuke')->nullable();
             $table->date('DatumPredaje')->nullable();
             $table->date('DatumPrijema')->nullable();
+            $table->string('token')->unique()->nullable();
             $table->string('Napomena')->nullable();
+            //add parent_nalog_id
+            $table->unsignedBigInteger('parent_nalog_id')->nullable();
+            $table->foreign('parent_nalog_id')->references('id')->on('production_orders');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

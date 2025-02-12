@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use Illuminate\Support\Facades\Log;
+use App\Models\ProductionOrder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderStatusUpdated;
 
 class ProductController extends Controller
 {
@@ -13,9 +16,9 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        Log::info('Action taken');
         $query = $request->input('query');
-        $products = Product::where('SkraceniNaziv', 'LIKE', "%{$query}%")->get();
+        $products = Product::where('SkraceniNaziv', 'LIKE', "%{$query}%")->distinct()->get();
+        Log::info("proizvodi: {$products}");
         return response()->json($products);
     }
     public function numeredlist(Request $request)
@@ -64,6 +67,8 @@ class ProductController extends Controller
         Log::info($ce);
         return response()->json($ce);
     }
+
+
 
     /**
      * Show the form for creating a new resource.
