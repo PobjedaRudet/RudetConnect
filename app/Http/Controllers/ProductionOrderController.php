@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendWelcomeEmail;
 use App\Mail\OrderStatusUpdated;
 use App\Models\Product;
 use App\Models\ProductionOrder;
 use App\Models\ProductionOrderDetails;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -30,7 +32,7 @@ class ProductionOrderController extends Controller
     public function orders()
     {
         $productionorders = ProductionOrder::all();
-        Log::info($productionorders);
+
 
         return view('productionorders.orders', compact('productionorders'));
     }
@@ -149,7 +151,7 @@ class ProductionOrderController extends Controller
             Log::info("Order fetched:", ['order_send' => $order_send]);
 
             // Send an email notification
-            //add customer email h.ahmet@pobjeda.com 
+            //add customer email h.ahmet@pobjeda.com
 
 
             if (!empty($order_send->customer_email)) {
@@ -193,12 +195,20 @@ class ProductionOrderController extends Controller
         return view('productionorders.show', compact('productionOrder', 'products'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ProductionOrder $productionOrder)
+
+    public function edit($id, $token)
     {
-        //
+        Log::info($id);
+        $productionOrder = ProductionOrder::where('id', $id)->where('token', $token)->firstOrFail();
+        $productionOrder->update(['Status' => 'completed']);
+        $customer = User::firstOrFail();
+Log::info($customer);
+        // Send an email notification
+        Mail::to($customer->email)->send(new OrderStatusUpdated($productionOrder));
+        SendWelcomeEmail::dispatch($customer);
+        //SendWelcomeEmail::dispatch($customer)->delay(now()->addMinutes(1));
+        return response()->json(['message' => 'Order status updated and email sent successfully!'], 200);
+        //return redirect()->route('productionorders.show', ['productionorder' => $productionOrder->id])->with('success', 'Order status updated and email sent successfully!');
     }
 
     /**

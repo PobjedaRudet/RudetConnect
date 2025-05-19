@@ -29,6 +29,7 @@ async function getOrderNumber() {
 
 // Postavljanje događaja za pretragu proizvoda
 function setupProductInput() {
+    console.log('Setting up product input');
     const productInput = document.getElementById('productInput');
     const datalist = document.getElementById('productSuggestions');
 
@@ -359,6 +360,8 @@ function posaljiNoviNalog() {
             .then(data => {
                 alert("Podaci su poslani!");
                 console.log(data);
+                //refresh current page
+                window.location.reload();
             })
             .catch(error => {
                 alert("Greška pri slanju podataka!");

@@ -42,3 +42,4 @@
             </div>
         </div>
     </x-app-layout>
+    @vite(['resources/js/test.js'])

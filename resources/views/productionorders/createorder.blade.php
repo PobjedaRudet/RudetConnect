@@ -19,7 +19,10 @@
                     <div class="grid grid-cols-4 gap-4">
                         <div class="col-span-1">
                             <label for="OrderNumber" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Broj naloga</label>
-                            <input type="text" name="OrderNumber" id="orderNumber" class="form-input rounded-md shadow-sm mt-1 block w-full dark:bg-gray-700 dark:text-gray-200" value="{{ old('OrderNumber') }}" required />
+                            @php
+                                $lastOrderNumber = $workingOrders->last()->OrderNumber ?? 0;
+                            @endphp
+                            <input type="text" name="OrderNumber" id="orderNumber" class="form-input rounded-md shadow-sm mt-1 block w-full dark:bg-gray-700 dark:text-gray-200" value="{{ $lastOrderNumber + 1 }}" disabled />
                         </div>
                         <div class="col-span-1">
                             <label for="VezaNaNalog" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Veza na nalog</label>
@@ -105,16 +108,11 @@
                         </div>
                     </div>
                     <div class="flex items-center justify-end mt-4">
-                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-700 border border-transparent rounded-md
-                                           font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-gray-600
-                                           focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 dark:focus:ring-gray-600
-                                           disabled:opacity-25 transition ease-in-out duration-150">
-                            Pregled
-                        </button>
+
                         <button id="pregledBtn" type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-700 border border-transparent rounded-md
                             font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-gray-600
                             focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 dark:focus:ring-gray-600
-                            disabled:opacity-25 transition ease-in-out duration-150">Pregled2</button>
+                            disabled:opacity-25 transition ease-in-out duration-150">Pregled</button>
                     </div>
 
 
@@ -136,4 +134,7 @@
 
 
 </x-app-layout>
-@vite('resources/js/nalog.js')
+@vite(['resources/js/nalog.js'])
+@vite(['resources/js/test.js'])
+
+

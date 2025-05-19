@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\DocxController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\FileUploadController;
@@ -14,10 +15,12 @@ use Illuminate\Support\Facades\Route;
 
 
 
+
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::get('/orders/{id}/{token}', [ProductionOrderController::class, 'edit'])->name('orders.edit');
+Route::get('/download-document/{orderId}/{userId}', [DocumentController::class, 'downloadDocument']);
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -38,7 +41,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/productionorders/{id}/edit', [ProductionOrderController::class, 'edit'])->name('productionorders.edit');
     //Route [productionorders.store] not defined.
-    Route::post('/productionorders/store', [ProductionOrderController::class, 'store'])->name('productionorders.store');
+    // Route::post('/productionorders/store', [ProductionOrderController::class, 'store'])->name('productionorders.store');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
